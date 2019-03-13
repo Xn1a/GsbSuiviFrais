@@ -9,11 +9,13 @@
     <string name="euro">€</string>
     <string name="ajouter">Ajouter</string>
     <string name="km">Km</string>
+    <string name="etape">étapes</string>
     <string name="plus">+</string>
     <string name="moins">-</string>
     <string name="valider">Valider</string>
     <string name="deux_points">:</string>
     <string name="title_frais_km">Frais kilométriques</string>
+    <string name="title_frais_etape">Frais d\'étapes</string>
     <string name="title_frais_hf">Frais hors forfait</string>
     <string name="motif">Motif :</string>
     <string name="montant">Montant :</string>
@@ -25,4 +27,5 @@
     <string name="icone_recap_hf">Icone du récapitulatif des frais hors forfait</string>
     <string name="icone_transfert">Icone de la commande de transfert</string>
     <string name="icone_supp_hf">Icône de suppression d\'une ligne de frais</string>
+    <string name="title_activity_forfait_etape">ForfaitEtapeActivity</string>
 </resources>
