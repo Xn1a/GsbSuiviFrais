@@ -4,26 +4,34 @@
 
     <application
         android:allowBackup="true"
+        android:fullBackupContent="@xml/my_backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:fullBackupContent="@xml/my_backup_rules">
+        android:theme="@style/AppTheme">
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="http"
+
+                <data
                     android:host="recipe-app.com"
-                    android:pathPrefix="/recipes" />
+                    android:pathPrefix="/recipes"
+                    android:scheme="http" />
             </intent-filter>
         </activity>
         <activity android:name=".HfActivity" />
         <activity android:name=".HfRecapActivity" />
         <activity android:name=".KmActivity" />
+        <activity  android:name=".ForfaitEtapeActivity" />
+        <activity  android:name=".NuiteeHotelActivity" />
+        <activity  android:name=".RepasRestaurantActivity" />
+
     </application>
 
 </manifest>
