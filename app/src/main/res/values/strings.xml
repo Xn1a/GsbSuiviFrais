@@ -28,4 +28,7 @@
     <string name="icone_transfert">Icone de la commande de transfert</string>
     <string name="icone_supp_hf">Icône de suppression d\'une ligne de frais</string>
     <string name="title_activity_forfait_etape">ForfaitEtapeActivity</string>
+    <string name="title_activity_nuitee_hotel">NuiteeHotelActivity</string>
+    <string name="title_frais_nuitee">Frais de nuitées</string>
+    <string name="nuitee">nuitées</string>
 </resources>
