@@ -18,6 +18,10 @@
             android:name=".NuiteeHotelActivity"
             android:label="@string/title_activity_nuitee_hotel"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".RepasRestaurantActivity"
+            android:label="@string/title_activity_repas_restaurant"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <activity android:name=".MainActivity">
             <intent-filter>

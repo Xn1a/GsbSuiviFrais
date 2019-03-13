@@ -31,4 +31,7 @@
     <string name="title_activity_nuitee_hotel">NuiteeHotelActivity</string>
     <string name="title_frais_nuitee">Frais de nuitées</string>
     <string name="nuitee">nuitées</string>
+    <string name="title_frais_repas">Frais de repas</string>
+    <string name="repas">repas</string>
+    <string name="title_activity_repas_restaurant">RepasRestaurantActivity</string>
 </resources>
