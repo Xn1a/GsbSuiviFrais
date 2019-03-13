@@ -95,7 +95,7 @@ public class RepasRestaurantActivity extends AppCompatActivity {
     }
 
     /**
-     * Sur le clic du bouton plus : ajout de 10 dans la quantité
+     * Sur le clic du bouton plus : ajout de 1 dans la quantité
      */
     private void cmdPlus_clic() {
         findViewById(R.id.cmdRepasPlus).setOnClickListener(new Button.OnClickListener() {
@@ -107,7 +107,7 @@ public class RepasRestaurantActivity extends AppCompatActivity {
     }
 
     /**
-     * Sur le clic du bouton moins : enlève 10 dans la quantité si c'est possible
+     * Sur le clic du bouton moins : enlève 1 dans la quantité si c'est possible
      */
     private void cmdMoins_clic() {
         findViewById(R.id.cmdRepasMoins).setOnClickListener(new Button.OnClickListener() {

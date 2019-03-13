@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -56,6 +58,7 @@ class FraisHfAdapter extends BaseAdapter {
 		TextView txtListJour ;
 		TextView txtListMontant ;
 		TextView txtListMotif ;
+		ImageButton btnListSupp;
 	}
 	
 	/**
@@ -64,12 +67,14 @@ class FraisHfAdapter extends BaseAdapter {
 	@Override
 	public View getView(int index, View convertView, ViewGroup parent) {
 		ViewHolder holder ;
+		final FraisHf fraisHf = lesFrais.get(index);
 		if (convertView == null) {
 			holder = new ViewHolder() ;
 			convertView = inflater.inflate(R.layout.layout_liste, parent, false) ;
 			holder.txtListJour = convertView.findViewById(R.id.txtListJour);
 			holder.txtListMontant = convertView.findViewById(R.id.txtListMontant);
 			holder.txtListMotif = convertView.findViewById(R.id.txtListMotif);
+			holder.btnListSupp = convertView.findViewById(R.id.cmdSuppHf);
 			convertView.setTag(holder) ;
 		}else{
 			holder = (ViewHolder)convertView.getTag();
@@ -77,7 +82,23 @@ class FraisHfAdapter extends BaseAdapter {
 		holder.txtListJour.setText(String.format(Locale.FRANCE, "%d", lesFrais.get(index).getJour()));
 		holder.txtListMontant.setText(String.format(Locale.FRANCE, "%.2f", lesFrais.get(index).getMontant())) ;
 		holder.txtListMotif.setText(lesFrais.get(index).getMotif()) ;
+		holder.btnListSupp.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+                supprimerFrais(fraisHf);
+			}
+		});
 		return convertView ;
 	}
+
+    /**
+     * Supprime un frais de la liste
+     *
+     * @param frais Le frais à supprimer de la liste
+     */
+    private void supprimerFrais(FraisHf frais) {
+        lesFrais.remove(frais);
+        notifyDataSetChanged();
+    }
 	
 }
