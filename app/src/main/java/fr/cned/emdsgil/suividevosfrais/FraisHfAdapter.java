@@ -74,7 +74,6 @@ class FraisHfAdapter extends BaseAdapter {
 	@Override
 	public View getView(final int index, View convertView, ViewGroup parent) {
 		ViewHolder holder ;
-		final FraisHf fraisHf = lesFrais.get(index);
 		if (convertView == null) {
 			holder = new ViewHolder() ;
 			convertView = inflater.inflate(R.layout.layout_liste, parent, false) ;
