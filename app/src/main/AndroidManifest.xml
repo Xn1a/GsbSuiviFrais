@@ -31,6 +31,7 @@
         <activity  android:name=".ForfaitEtapeActivity" />
         <activity  android:name=".NuiteeHotelActivity" />
         <activity  android:name=".RepasRestaurantActivity" />
+        <activity  android:name=".AuthActivity" />
 
     </application>
 

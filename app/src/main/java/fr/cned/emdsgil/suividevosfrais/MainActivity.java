@@ -18,6 +18,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setTitle("GSB : Suivi des frais");
+        // récupération des identifiants du visiteur
+        recupIdentifiants();
+        System.out.println("GOGO");
         // récupération des informations sérialisées
         recupSerialize();
         // chargement des méthodes événementielles
@@ -39,6 +42,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Récupère la sérialisation  des identifiants du visiteur si elle existe
+     */
+    private void recupIdentifiants() {
+        Hashtable<?, ?> monHash = (Hashtable<?, ?>) Serializer.deSerialize(MainActivity.this, Global.idFileName);
+        if (monHash != null) {
+            Hashtable<String, String> monHashCast = new Hashtable<>();
+            for (Hashtable.Entry<?, ?> entry : monHash.entrySet()) {
+                monHashCast.put((String) entry.getKey(), (String) entry.getValue());
+            }
+            Global.identifiants = monHashCast;
+        }
+        // Si rien n'a été récupéré, on renvoie vers l'activité d'authentification
+        if (Global.identifiants == null || Global.identifiants.size() == 0) {
+            Intent intent = new Intent(MainActivity.this, AuthActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    /**
      * Récupère la sérialisation si elle existe
      */
     private void recupSerialize() {
@@ -48,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
          * on cast chaque valeur dans le type attendu.
          * Seulement ensuite on affecte cet Hastable à Global.listFraisMois.
         */
-        Hashtable<?, ?> monHash = (Hashtable<?, ?>) Serializer.deSerialize(MainActivity.this);
+        Hashtable<?, ?> monHash = (Hashtable<?, ?>) Serializer.deSerialize(MainActivity.this, Global.filename);
         if (monHash != null) {
             Hashtable<Integer, FraisMois> monHashCast = new Hashtable<>();
             for (Hashtable.Entry<?, ?> entry : monHash.entrySet()) {

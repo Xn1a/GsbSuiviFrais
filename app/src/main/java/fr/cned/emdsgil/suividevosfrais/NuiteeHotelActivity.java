@@ -88,7 +88,7 @@ public class NuiteeHotelActivity extends AppCompatActivity {
     private void cmdValider_clic() {
         findViewById(R.id.cmdNuiteeValider).setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                Serializer.serialize(Global.listFraisMois, NuiteeHotelActivity.this) ;
+                Serializer.serialize(Global.listFraisMois, NuiteeHotelActivity.this, Global.filename) ;
                 retourActivityPrincipale() ;
             }
         }) ;

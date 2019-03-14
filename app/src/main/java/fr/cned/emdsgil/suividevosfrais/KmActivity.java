@@ -88,7 +88,7 @@ public class KmActivity extends AppCompatActivity {
     private void cmdValider_clic() {
     	findViewById(R.id.cmdKmValider).setOnClickListener(new Button.OnClickListener() {
     		public void onClick(View v) {
-    			Serializer.serialize(Global.listFraisMois, KmActivity.this) ;
+    			Serializer.serialize(Global.listFraisMois, KmActivity.this, Global.filename) ;
     			retourActivityPrincipale() ;    		
     		}
     	}) ;    	

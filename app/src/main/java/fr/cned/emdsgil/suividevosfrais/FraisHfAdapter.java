@@ -100,7 +100,7 @@ class FraisHfAdapter extends BaseAdapter {
     /**
      * Supprime un frais de la ListView et du fichier
      *
-     * @param Int index L'index du frais à supprimer frais à supprimer de la liste
+     * @param index L'index du frais à supprimer frais à supprimer de la liste
      */
     private void supprimerFrais(int index) {
         // Suppression du frais de la ListView
@@ -108,7 +108,7 @@ class FraisHfAdapter extends BaseAdapter {
         notifyDataSetChanged();
         // Suppression du frais dans le fichier
         listFraisMois.get(fraisMois.getAnnee()*100 + fraisMois.getMois()).supprFraisHf(index);
-        Serializer.serialize(listFraisMois, context);
+        Serializer.serialize(listFraisMois, context, Global.filename);
     }
 	
 }
