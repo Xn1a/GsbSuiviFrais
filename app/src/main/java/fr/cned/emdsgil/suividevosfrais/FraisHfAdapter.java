@@ -10,21 +10,28 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Locale;
 
 class FraisHfAdapter extends BaseAdapter {
 
 	private final ArrayList<FraisHf> lesFrais ; // liste des frais du mois
 	private final LayoutInflater inflater ;
+	private final FraisMois fraisMois;
+	private final Context context;
+	private Hashtable<Integer, FraisMois> listFraisMois;
 
     /**
 	 * Constructeur de l'adapter pour valoriser les propriétés
      * @param context Accès au contexte de l'application
      * @param lesFrais Liste des frais hors forfait
      */
-	public FraisHfAdapter(Context context, ArrayList<FraisHf> lesFrais) {
+	public FraisHfAdapter(Context context, ArrayList<FraisHf> lesFrais, FraisMois fraisMois, Hashtable listFraisMois) {
+		this.context = context;
 		inflater = LayoutInflater.from(context) ;
 		this.lesFrais = lesFrais ;
+		this.fraisMois = fraisMois;
+		this.listFraisMois = listFraisMois;
     }
 	
 	/**
@@ -86,19 +93,24 @@ class FraisHfAdapter extends BaseAdapter {
 			@Override
 			public void onClick(View view) {
                 supprimerFrais(fraisHf);
+
 			}
 		});
 		return convertView ;
 	}
 
     /**
-     * Supprime un frais de la liste
+     * Supprime un frais de la ListView et du fichier
      *
      * @param frais Le frais à supprimer de la liste
      */
     private void supprimerFrais(FraisHf frais) {
+        // Suppression du frais de la ListView
         lesFrais.remove(frais);
         notifyDataSetChanged();
+        // Suppression du frais dans le fichier
+        listFraisMois.get(fraisMois.getAnnee()*100 + fraisMois.getMois()).removeFraisHf(frais);
+        Serializer.serialize(listFraisMois, context);
     }
 	
 }

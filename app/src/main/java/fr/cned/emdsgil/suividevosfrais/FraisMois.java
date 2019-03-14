@@ -43,6 +43,15 @@ class FraisMois implements Serializable {
     /**
      * Suppression d'un frais hors forfait
      *
+     * @param frais Le frais hors forfait à supprimer
+     */
+    public void removeFraisHf(FraisHf frais) {
+        lesFraisHf.remove(frais);
+    }
+
+    /**
+     * Suppression d'un frais hors forfait
+     *
      * @param index Indice du frais hors forfait à supprimer
      */
     public void supprFraisHf(Integer index) {
