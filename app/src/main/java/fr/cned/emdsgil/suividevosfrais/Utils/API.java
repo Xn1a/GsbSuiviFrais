@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class API {
     public static final String API_URL = "http://192.168.1.23/GSB_API/API.php/";
     public static final String OP_TESTER_CONNEXION = "testerConnexion";
-    public static final String OP_CREER_FRAIS_HF = "creerFrais";
+    public static final String OP_CREER_FRAIS_HF = "creerFraisHf";
 
     private static APIOperations instance = null;
 
