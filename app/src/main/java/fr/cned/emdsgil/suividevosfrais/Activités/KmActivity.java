@@ -1,4 +1,4 @@
-package fr.cned.emdsgil.suividevosfrais;
+package fr.cned.emdsgil.suividevosfrais.Activités;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +14,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import java.util.Locale;
+
+import fr.cned.emdsgil.suividevosfrais.Models.FraisMois;
+import fr.cned.emdsgil.suividevosfrais.Utils.Global;
+import fr.cned.emdsgil.suividevosfrais.Utils.Serializer;
+import fr.cned.emdsgil.suividevosfrais.R;
 
 public class KmActivity extends AppCompatActivity {
 
@@ -88,7 +93,7 @@ public class KmActivity extends AppCompatActivity {
     private void cmdValider_clic() {
     	findViewById(R.id.cmdKmValider).setOnClickListener(new Button.OnClickListener() {
     		public void onClick(View v) {
-    			Serializer.serialize(Global.listFraisMois, KmActivity.this) ;
+    			Serializer.serialize(Global.listFraisMois, KmActivity.this, Global.filename) ;
     			retourActivityPrincipale() ;    		
     		}
     	}) ;    	

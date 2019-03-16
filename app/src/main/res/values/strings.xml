@@ -34,4 +34,8 @@
     <string name="title_frais_repas">Frais de repas</string>
     <string name="repas">repas</string>
     <string name="title_activity_repas_restaurant">RepasRestaurantActivity</string>
+    <string name="auth_titre">Connexion à GSB</string>
+    <string name="auth_utilisateur">Nom d\'utilisateur</string>
+    <string name="auth_mdp">Mot de passe</string>
+    <string name="btn_auth">Tester connexion</string>
 </resources>

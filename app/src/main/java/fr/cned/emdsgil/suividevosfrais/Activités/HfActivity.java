@@ -1,4 +1,4 @@
-package fr.cned.emdsgil.suividevosfrais;
+package fr.cned.emdsgil.suividevosfrais.Activités;
 
 import android.os.Bundle;
 import android.content.Intent;
@@ -11,6 +11,11 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+
+import fr.cned.emdsgil.suividevosfrais.Models.FraisMois;
+import fr.cned.emdsgil.suividevosfrais.Utils.Global;
+import fr.cned.emdsgil.suividevosfrais.Utils.Serializer;
+import fr.cned.emdsgil.suividevosfrais.R;
 
 public class HfActivity extends AppCompatActivity {
 
@@ -62,7 +67,7 @@ public class HfActivity extends AppCompatActivity {
     	findViewById(R.id.cmdHfAjouter).setOnClickListener(new Button.OnClickListener() {
     		public void onClick(View v) {
     			enregListe() ;
-    			Serializer.serialize(Global.listFraisMois, HfActivity.this) ;
+    			Serializer.serialize(Global.listFraisMois, HfActivity.this, Global.filename) ;
     			retourActivityPrincipale() ;    		
     		}
     	}) ;    	

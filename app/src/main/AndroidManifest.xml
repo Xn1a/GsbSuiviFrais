@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="fr.cned.emdsgil.suividevosfrais">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:allowBackup="true"
         android:fullBackupContent="@xml/my_backup_rules"
@@ -11,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".Activités.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -25,12 +27,13 @@
                     android:scheme="http" />
             </intent-filter>
         </activity>
-        <activity android:name=".HfActivity" />
-        <activity android:name=".HfRecapActivity" />
-        <activity android:name=".KmActivity" />
-        <activity  android:name=".ForfaitEtapeActivity" />
-        <activity  android:name=".NuiteeHotelActivity" />
-        <activity  android:name=".RepasRestaurantActivity" />
+        <activity android:name=".Activités.HfActivity" />
+        <activity android:name=".Activités.HfRecapActivity" />
+        <activity android:name=".Activités.KmActivity" />
+        <activity  android:name=".Activités.ForfaitEtapeActivity" />
+        <activity  android:name=".Activités.NuiteeHotelActivity" />
+        <activity  android:name=".Activités.RepasRestaurantActivity" />
+        <activity  android:name=".Activités.AuthActivity" />
 
     </application>
 

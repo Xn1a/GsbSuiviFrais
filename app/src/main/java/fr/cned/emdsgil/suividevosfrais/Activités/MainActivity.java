@@ -1,15 +1,21 @@
-package fr.cned.emdsgil.suividevosfrais;
+package fr.cned.emdsgil.suividevosfrais.Activités;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
 import java.util.Hashtable;
+
+import fr.cned.emdsgil.suividevosfrais.Models.FraisMois;
+import fr.cned.emdsgil.suividevosfrais.Utils.Global;
+import fr.cned.emdsgil.suividevosfrais.Utils.Serializer;
+import fr.cned.emdsgil.suividevosfrais.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setTitle("GSB : Suivi des frais");
+        // récupération des identifiants du visiteur
+        recupIdentifiants();
         // récupération des informations sérialisées
         recupSerialize();
         // chargement des méthodes événementielles
@@ -38,6 +46,36 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_compte) {
+            Intent intent = new Intent(MainActivity.this, AuthActivity.class);
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    /**
+     * Récupère la sérialisation  des identifiants du visiteur si elle existe
+     */
+    private void recupIdentifiants() {
+        Hashtable<?, ?> monHash = (Hashtable<?, ?>) Serializer.deSerialize(MainActivity.this, Global.idFileName);
+        if (monHash != null) {
+            Hashtable<String, String> monHashCast = new Hashtable<>();
+            for (Hashtable.Entry<?, ?> entry : monHash.entrySet()) {
+                monHashCast.put((String) entry.getKey(), (String) entry.getValue());
+            }
+            Global.identifiants = monHashCast;
+        }
+        // Si rien n'a été récupéré, on renvoie vers l'activité d'authentification
+        if (Global.identifiants == null || Global.identifiants.size() == 0) {
+            Intent intent = new Intent(MainActivity.this, AuthActivity.class);
+            finish();
+            startActivity(intent);
+        }
+    }
+
     /**
      * Récupère la sérialisation si elle existe
      */
@@ -48,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
          * on cast chaque valeur dans le type attendu.
          * Seulement ensuite on affecte cet Hastable à Global.listFraisMois.
         */
-        Hashtable<?, ?> monHash = (Hashtable<?, ?>) Serializer.deSerialize(MainActivity.this);
+        Hashtable<?, ?> monHash = (Hashtable<?, ?>) Serializer.deSerialize(MainActivity.this, Global.filename);
         if (monHash != null) {
             Hashtable<Integer, FraisMois> monHashCast = new Hashtable<>();
             for (Hashtable.Entry<?, ?> entry : monHash.entrySet()) {
@@ -63,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
 			 * Original : Typage explicit =
 			 * Global.listFraisMois = new Hashtable<Integer, FraisMois>();
 			*/
-
         }
     }
 

@@ -1,3 +1,4 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="auth_titre_taille_texte">35dp</dimen>
 </resources>
