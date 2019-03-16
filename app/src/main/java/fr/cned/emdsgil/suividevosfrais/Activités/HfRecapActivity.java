@@ -1,4 +1,4 @@
-package fr.cned.emdsgil.suividevosfrais;
+package fr.cned.emdsgil.suividevosfrais.Activités;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +13,12 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+
+import fr.cned.emdsgil.suividevosfrais.Models.FraisHf;
+import fr.cned.emdsgil.suividevosfrais.Adapters.FraisHfAdapter;
+import fr.cned.emdsgil.suividevosfrais.Models.FraisMois;
+import fr.cned.emdsgil.suividevosfrais.R;
+import fr.cned.emdsgil.suividevosfrais.Utils.Global;
 
 public class HfRecapActivity extends AppCompatActivity {
 

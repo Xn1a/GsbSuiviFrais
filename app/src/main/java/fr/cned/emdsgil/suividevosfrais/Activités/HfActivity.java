@@ -1,4 +1,4 @@
-package fr.cned.emdsgil.suividevosfrais;
+package fr.cned.emdsgil.suividevosfrais.Activités;
 
 import android.os.Bundle;
 import android.content.Intent;
@@ -11,6 +11,11 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+
+import fr.cned.emdsgil.suividevosfrais.Models.FraisMois;
+import fr.cned.emdsgil.suividevosfrais.Utils.Global;
+import fr.cned.emdsgil.suividevosfrais.Utils.Serializer;
+import fr.cned.emdsgil.suividevosfrais.R;
 
 public class HfActivity extends AppCompatActivity {
 

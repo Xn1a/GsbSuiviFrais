@@ -1,15 +1,21 @@
-package fr.cned.emdsgil.suividevosfrais;
+package fr.cned.emdsgil.suividevosfrais.Activités;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
 import java.util.Hashtable;
+
+import fr.cned.emdsgil.suividevosfrais.Models.FraisMois;
+import fr.cned.emdsgil.suividevosfrais.Utils.Global;
+import fr.cned.emdsgil.suividevosfrais.Utils.Serializer;
+import fr.cned.emdsgil.suividevosfrais.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
         setTitle("GSB : Suivi des frais");
         // récupération des identifiants du visiteur
         recupIdentifiants();
-        System.out.println("GOGO");
         // récupération des informations sérialisées
         recupSerialize();
         // chargement des méthodes événementielles
@@ -41,6 +46,16 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_compte) {
+            Intent intent = new Intent(MainActivity.this, AuthActivity.class);
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
     /**
      * Récupère la sérialisation  des identifiants du visiteur si elle existe
      */
@@ -56,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         // Si rien n'a été récupéré, on renvoie vers l'activité d'authentification
         if (Global.identifiants == null || Global.identifiants.size() == 0) {
             Intent intent = new Intent(MainActivity.this, AuthActivity.class);
+            finish();
             startActivity(intent);
         }
     }
@@ -85,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
 			 * Original : Typage explicit =
 			 * Global.listFraisMois = new Hashtable<Integer, FraisMois>();
 			*/
-
         }
     }
 

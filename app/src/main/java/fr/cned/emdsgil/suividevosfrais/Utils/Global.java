@@ -1,4 +1,4 @@
-package fr.cned.emdsgil.suividevosfrais;
+package fr.cned.emdsgil.suividevosfrais.Utils;
 
 import android.content.res.Resources;
 import android.util.Log;
@@ -8,7 +8,9 @@ import android.widget.DatePicker;
 import java.lang.reflect.Field;
 import java.util.Hashtable;
 
-abstract class Global {
+import fr.cned.emdsgil.suividevosfrais.Models.FraisMois;
+
+public abstract class Global {
 
     // tableau d'informations mémorisées
     public static Hashtable<Integer, FraisMois> listFraisMois = new Hashtable<>();
