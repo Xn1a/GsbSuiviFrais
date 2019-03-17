@@ -1,5 +1,6 @@
 package fr.cned.emdsgil.suividevosfrais.Activités;
 
+import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -24,8 +25,17 @@ public class HfActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_hf);
         setTitle("GSB : Frais HF");
-        // modification de l'affichage du DatePicker
-        Global.changeAfficheDate((DatePicker) findViewById(R.id.datHf), true) ;
+
+		// modification de l'affichage du DatePicker
+		DatePicker datePicker = findViewById(R.id.datHf);
+		Global.changeAfficheDate(datePicker, false) ;
+
+		// On ne peut modifier que les frais datant du mois courant et des mois suivant
+		Calendar cal = Calendar.getInstance();
+		int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
+		cal.add(Calendar.DAY_OF_MONTH, -dayOfMonth+1);
+		datePicker.setMinDate(cal.getTimeInMillis());
+
 		// mise à 0 du montant
 		((EditText)findViewById(R.id.txtHf)).setText("0") ;
         // chargement des méthodes événementielles
