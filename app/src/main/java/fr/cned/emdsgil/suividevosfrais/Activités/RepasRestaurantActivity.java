@@ -1,5 +1,6 @@
 package fr.cned.emdsgil.suividevosfrais.Activités;
 
+import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuInflater;
@@ -32,8 +33,17 @@ public class RepasRestaurantActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_repas_restaurant);
         setTitle("GSB : Frais de repas");
+
         // modification de l'affichage du DatePicker
-        Global.changeAfficheDate((DatePicker) findViewById(R.id.datRepas), false) ;
+        DatePicker datePicker = findViewById(R.id.datRepas);
+        Global.changeAfficheDate(datePicker, false) ;
+
+        // On ne peut modifier que les frais datant du mois courant et des mois suivant
+        Calendar cal = Calendar.getInstance();
+        int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
+        cal.add(Calendar.DAY_OF_MONTH, -dayOfMonth+1);
+        datePicker.setMinDate(cal.getTimeInMillis());
+
         // valorisation des propriétés
         valoriseProprietes() ;
         // chargement des méthodes événementielles

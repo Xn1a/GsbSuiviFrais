@@ -1,5 +1,6 @@
 package fr.cned.emdsgil.suividevosfrais.Activités;
 
+import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuInflater;
@@ -32,8 +33,17 @@ public class NuiteeHotelActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nuitee_hotel);
         setTitle("GSB : Frais de nuitées");
+
         // modification de l'affichage du DatePicker
-        Global.changeAfficheDate((DatePicker) findViewById(R.id.datNuitee), false) ;
+        DatePicker datePicker = findViewById(R.id.datNuitee);
+        Global.changeAfficheDate(datePicker, false) ;
+
+        // On ne peut modifier que les frais datant du mois courant et des mois suivant
+        Calendar cal = Calendar.getInstance();
+        int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
+        cal.add(Calendar.DAY_OF_MONTH, -dayOfMonth+1);
+        datePicker.setMinDate(cal.getTimeInMillis());
+
         // valorisation des propriétés
         valoriseProprietes() ;
         // chargement des méthodes événementielles

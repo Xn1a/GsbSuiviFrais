@@ -1,6 +1,7 @@
 package fr.cned.emdsgil.suividevosfrais.Activités;
 
 import android.content.Intent;
+import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -33,7 +34,15 @@ public class ForfaitEtapeActivity extends AppCompatActivity {
         setTitle("GSB : Frais d'étapes");
 
         // modification de l'affichage du DatePicker
-        Global.changeAfficheDate((DatePicker) findViewById(R.id.datEtape), false) ;
+        DatePicker datePicker = findViewById(R.id.datEtape);
+        Global.changeAfficheDate(datePicker, false) ;
+
+        // On ne peut modifier que les frais datant du mois courant et des mois suivant
+        Calendar cal = Calendar.getInstance();
+        int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
+        cal.add(Calendar.DAY_OF_MONTH, -dayOfMonth+1);
+        datePicker.setMinDate(cal.getTimeInMillis());
+
         // valorisation des propriétés
         valoriseProprietes() ;
         // chargement des méthodes événementielles
