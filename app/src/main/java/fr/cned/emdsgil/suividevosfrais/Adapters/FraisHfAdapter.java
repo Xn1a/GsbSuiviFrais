@@ -105,7 +105,7 @@ public class FraisHfAdapter extends BaseAdapter {
     /**
      * Supprime un frais de la ListView et du fichier
      *
-     * @param index L'index du frais à supprimer frais à supprimer de la liste
+     * @param index L'index du frais à supprimer frais de la liste
      */
     private void supprimerFrais(int index) {
         // Suppression du frais de la ListView

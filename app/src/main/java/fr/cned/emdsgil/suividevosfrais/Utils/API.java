@@ -7,6 +7,7 @@ public class API {
     public static final String API_URL = "http://192.168.1.23/GSB_API/API.php/";
     public static final String OP_TESTER_CONNEXION = "testerConnexion";
     public static final String OP_CREER_FRAIS_HF = "creerFraisHf";
+    public static final String OP_CREER_FRAIS_FORFAIT = "creerFraisForfait";
 
     private static APIOperations instance = null;
 

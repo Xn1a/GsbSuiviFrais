@@ -38,4 +38,12 @@
     <string name="auth_utilisateur">Nom d\'utilisateur</string>
     <string name="auth_mdp">Mot de passe</string>
     <string name="btn_auth">Tester connexion</string>
+    <string name="sync_dialog_message">Tous les frais forfaitisés et hors forfait récemment ajoutés
+        vont etre envoyés dans la base de données distante. Ceux-ci seront conservés dans l\'application
+        mais seuls les frais forfait seront modifiables. Pour modifier les frais hors forfait
+        il sera nécessaire d\'utiliser l\'application web de GSB.
+    </string>
+    <string name="sync_dialog_titre">Attention</string>
+    <string name="sync_dialog_positive">OK</string>
+    <string name="sync_dialog_negative">Annuler</string>
 </resources>

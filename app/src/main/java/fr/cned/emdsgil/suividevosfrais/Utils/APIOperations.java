@@ -2,6 +2,8 @@ package fr.cned.emdsgil.suividevosfrais.Utils;
 
 import com.google.gson.JsonElement;
 
+import java.util.Map;
+
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -20,5 +22,15 @@ public interface APIOperations {
             , @Field("libelle") String libelle
             , @Field("date") String date
             , @Field("montant") Float montant
+    );
+
+    @FormUrlEncoded
+    @POST("?operation="+API.OP_CREER_FRAIS_FORFAIT)
+    Call<JsonElement> creerFraisForfait(@Query("login") String login, @Query("mdp") String mdp
+            , @Field("mois") String mois
+            , @Field("qteEtape") int qteEtape
+            , @Field("qteRepas") int qteRepas
+            , @Field("qteNuitee") int qteNuitee
+            , @Field("qteKm") int qteKm
     );
 }

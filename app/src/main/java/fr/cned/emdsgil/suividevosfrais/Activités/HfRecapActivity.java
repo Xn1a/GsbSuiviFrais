@@ -71,7 +71,7 @@ public class HfRecapActivity extends AppCompatActivity {
 			*/
 			// insertion dans la listview
 		}
-		ListView listView = (ListView) findViewById(R.id.lstHfRecap);
+		ListView listView = findViewById(R.id.lstHfRecap);
 		FraisHfAdapter adapter = new FraisHfAdapter(HfRecapActivity.this, liste, new FraisMois(annee, mois), Global.listFraisMois) ;
 		listView.setAdapter(adapter) ;
 	}
@@ -99,8 +99,6 @@ public class HfRecapActivity extends AppCompatActivity {
 			}
     	});       	
     }
-    
-    
 
 	/**
 	 * Retour à l'activité principale (le menu)

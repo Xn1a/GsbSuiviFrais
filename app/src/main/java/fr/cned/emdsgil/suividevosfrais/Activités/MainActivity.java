@@ -18,7 +18,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Set;
 
 import fr.cned.emdsgil.suividevosfrais.Models.FraisHf;
@@ -154,19 +156,16 @@ public class MainActivity extends AppCompatActivity {
      */
     private void afficherDialogConfirmation() {
         AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-        alertDialog.setTitle("Attention");
-        alertDialog.setMessage("Tous les frais forfaitisés et hors forfait récemment ajoutés vont etres envoyés "
-                + "dans la base de données distante. Ceux-ci seront conservés dans l'application "
-                + "mais ne pourront plus etres modifiés. Pour cela il sera nécessaire "
-                + "d'utiliser l'application web GSB.");
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+        alertDialog.setTitle(getString(R.string.sync_dialog_titre));
+        alertDialog.setMessage(getString(R.string.sync_dialog_message));
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.sync_dialog_positive),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         synchroniseFrais();
                     }
                 });
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Annuler",
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.sync_dialog_negative),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -181,12 +180,13 @@ public class MainActivity extends AppCompatActivity {
     private void synchroniseFrais() {
         if (Global.listFraisMois != null && Global.listFraisMois.size() > 0) {
             Set<Integer> lesMois = Global.listFraisMois.keySet();
-            int nbFraisSync = 0; // Le nombre de frais qui ont été synchronisés
+            int nbFraisSync = 0; // Le nombre de frais qui ont été synchronisés durant cette procédure
+            for(int leMois : lesMois) {
+                final FraisMois fraisMois = Global.listFraisMois.get(leMois);
 
-            for(int mois : lesMois) {
-                final FraisMois fraisMois = Global.listFraisMois.get(mois);
+                // Pour chaque frais hors forfait du fraisMois
                 for(final FraisHf fraisHf : fraisMois.getLesFraisHf()) {
-                    // Si le frais n'a jamais été envoyé
+                    // Si le frais n'a jamais été synchronisé
                     if (!fraisHf.estSync()) {
                         nbFraisSync++;
 
@@ -194,13 +194,14 @@ public class MainActivity extends AppCompatActivity {
                         APIOperations api = API.getAPI();
                         String date = String.valueOf(fraisHf.getJour()) + '/' + fraisMois.getMois()
                                 + '/' + fraisMois.getAnnee();
-                        Call<JsonElement> creerFraisHf = api.creerFraisHf(this.login, this.mdp, String.valueOf(mois), fraisHf.getMotif()
+                        Call<JsonElement> creerFraisHf = api.creerFraisHf(this.login, this.mdp, String.valueOf(leMois), fraisHf.getMotif()
                                 , date, fraisHf.getMontant());
 
                         // Réception de la reponse
                         creerFraisHf.enqueue(new Callback<JsonElement>() {
                             @Override
                             public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                                assert response.body() != null;
                                 JsonObject reponse = response.body().getAsJsonObject();
                                 // Affiche les erreurs si il y en a
                                 Boolean erreur = Boolean.valueOf(reponse.get("erreur").toString());
@@ -218,6 +219,56 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                     }
+                }
+                // Si il y des modifications des frais forfait du mois qui n'ont pas encore été sync
+                if (fraisMois.getLesFraisForfaitModifies().size() > 0) {
+                    nbFraisSync+=fraisMois.getLesFraisForfaitModifies().size();
+
+                    // Les frais forfait qui n'ont pas été modifiés sont à -1. Ainsi l'API sera que
+                    // pour ces frais elle devra récupérer les valeur déjà présentes dans la BD
+                    Integer qteEtape = -1;
+                    Integer qteRepas = -1;
+                    Integer qteNuitee = -1;
+                    Integer qteKm = -1;
+
+                    if (fraisMois.getLesFraisForfaitModifies().contains("ETP")) {
+                        qteEtape = fraisMois.getEtape();
+                    }
+                    if (fraisMois.getLesFraisForfaitModifies().contains("REP")) {
+                        qteRepas = fraisMois.getRepas();
+                    }
+                    if (fraisMois.getLesFraisForfaitModifies().contains("NUI")) {
+                        qteNuitee = fraisMois.getNuitee();
+                    }
+                    if (fraisMois.getLesFraisForfaitModifies().contains("KM")) {
+                        qteKm = fraisMois.getKm();
+                    }
+
+                    // Envoie des frais forfait à la BD distante
+                    APIOperations api = API.getAPI();
+                    Call<JsonElement> creerFraisForfait = api.creerFraisForfait(this.login, this.mdp
+                            , String.valueOf(leMois), qteEtape, qteRepas, qteNuitee, qteKm);
+
+                    // Réception de la réponse
+                    creerFraisForfait.enqueue(new Callback<JsonElement>() {
+                        @Override
+                        public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                            JsonObject reponse = response.body().getAsJsonObject();
+                            // Affiche les erreurs si il y en a
+                            Boolean erreur = Boolean.valueOf(reponse.get("erreur").toString());
+                            if (erreur) {
+                                String message = String.valueOf(reponse.get("message"));
+                                Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+                                return;
+                            }
+                            Toast.makeText(MainActivity.this, "Les frais ont bien été synchronisés", Toast.LENGTH_LONG).show();
+                            marquerFraisForfaitSync(fraisMois);
+                        }
+                        @Override
+                        public void onFailure(Call<JsonElement> call, Throwable t) {
+                            Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
             }
             // Si aucun frais n'a été synchronisé
@@ -238,6 +289,16 @@ public class MainActivity extends AppCompatActivity {
         int indexFrais = mois.getLesFraisHf().indexOf(fraisHf);
         ArrayList<FraisHf> lesFraisHf = Global.listFraisMois.get(mois.getAnnee()*100 + mois.getMois()).getLesFraisHf();
         lesFraisHf.get(indexFrais).setEstSync(true);
+        Serializer.serialize(Global.listFraisMois, MainActivity.this, Global.filename);
+    }
+
+    /**
+     * Marque les frais forfait du mois comme ayant été synchronisés
+     * @param mois Le mois / la fiche auquel(le) appartiennent les frais forfait
+     */
+    private void marquerFraisForfaitSync(FraisMois mois) {
+        FraisMois fraisMois = Global.listFraisMois.get(mois.getAnnee()*100 + mois.getMois());
+        fraisMois.getLesFraisForfaitModifies().clear();
         Serializer.serialize(Global.listFraisMois, MainActivity.this, Global.filename);
     }
 }
