@@ -149,6 +149,7 @@ public class NuiteeHotelActivity extends AppCompatActivity {
             Global.listFraisMois.put(key, new FraisMois(annee, mois)) ;
         }
         Global.listFraisMois.get(key).setNuitee(qte) ;
+        Global.listFraisMois.get(key).getLesFraisForfaitModifies().add("NUI");
     }
 
     /**

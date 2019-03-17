@@ -1,7 +1,10 @@
 package fr.cned.emdsgil.suividevosfrais.Activités;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.constraint.solver.Goal;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -9,15 +12,32 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
+import java.util.Set;
 
+import fr.cned.emdsgil.suividevosfrais.Models.FraisHf;
 import fr.cned.emdsgil.suividevosfrais.Models.FraisMois;
+import fr.cned.emdsgil.suividevosfrais.Utils.API;
+import fr.cned.emdsgil.suividevosfrais.Utils.APIOperations;
 import fr.cned.emdsgil.suividevosfrais.Utils.Global;
 import fr.cned.emdsgil.suividevosfrais.Utils.Serializer;
 import fr.cned.emdsgil.suividevosfrais.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
+
+    private String login;
+    private String mdp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
     /**
      * Récupère la sérialisation  des identifiants du visiteur si elle existe
      */
@@ -73,7 +92,11 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, AuthActivity.class);
             finish();
             startActivity(intent);
+        } else {
+          this.login = Global.identifiants.get("login");
+          this.mdp = Global.identifiants.get("mdp");
         }
+
     }
 
     /**
@@ -123,9 +146,159 @@ public class MainActivity extends AppCompatActivity {
     private void cmdTransfert_clic() {
         findViewById(R.id.cmdTransfert).setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                // envoi les informations sérialisées vers le serveur
-                // en construction
+                afficherDialogConfirmation();
             }
         });
+    }
+
+    /**
+     * Affiche la boite de dialogue demandant confirmation avant de synchroniser les données
+     */
+    private void afficherDialogConfirmation() {
+        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+        alertDialog.setTitle(getString(R.string.sync_dialog_titre));
+        alertDialog.setMessage(getString(R.string.sync_dialog_message));
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.sync_dialog_positive),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        synchroniseFrais();
+                    }
+                });
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.sync_dialog_negative),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+    }
+
+    /**
+     * Envoie les frais dans la base de donnée distante
+     */
+    private void synchroniseFrais() {
+        if (Global.listFraisMois != null && Global.listFraisMois.size() > 0) {
+            Set<Integer> lesMois = Global.listFraisMois.keySet();
+            int nbFraisSync = 0; // Le nombre de frais qui ont été synchronisés durant cette procédure
+            for(int leMois : lesMois) {
+                final FraisMois fraisMois = Global.listFraisMois.get(leMois);
+
+                // Pour chaque frais hors forfait du fraisMois
+                for(final FraisHf fraisHf : fraisMois.getLesFraisHf()) {
+                    // Si le frais n'a jamais été synchronisé
+                    if (!fraisHf.estSync()) {
+                        nbFraisSync++;
+
+                        // Envoie du frais à la base de données distante
+                        APIOperations api = API.getAPI();
+                        String date = String.valueOf(fraisHf.getJour()) + '/' + fraisMois.getMois()
+                                + '/' + fraisMois.getAnnee();
+                        Call<JsonElement> creerFraisHf = api.creerFraisHf(this.login, this.mdp, String.valueOf(leMois), fraisHf.getMotif()
+                                , date, fraisHf.getMontant());
+
+                        // Réception de la reponse
+                        creerFraisHf.enqueue(new Callback<JsonElement>() {
+                            @Override
+                            public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                                assert response.body() != null;
+                                JsonObject reponse = response.body().getAsJsonObject();
+                                // Affiche les erreurs si il y en a
+                                Boolean erreur = Boolean.valueOf(reponse.get("erreur").toString());
+                                if (erreur) {
+                                    String message = String.valueOf(reponse.get("message"));
+                                    Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+                                    return;
+                                }
+                                Toast.makeText(MainActivity.this, "Les frais ont bien été synchronisés", Toast.LENGTH_LONG).show();
+                                marquerFraisHfSync(fraisMois, fraisHf);
+                            }
+                            @Override
+                            public void onFailure(Call<JsonElement> call, Throwable t) {
+                                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                }
+                // Si il y des modifications des frais forfait du mois qui n'ont pas encore été sync
+                if (fraisMois.getLesFraisForfaitModifies().size() > 0) {
+                    nbFraisSync+=fraisMois.getLesFraisForfaitModifies().size();
+
+                    // Les frais forfait qui n'ont pas été modifiés sont à -1. Ainsi l'API sera que
+                    // pour ces frais elle devra récupérer les valeur déjà présentes dans la BD
+                    Integer qteEtape = -1;
+                    Integer qteRepas = -1;
+                    Integer qteNuitee = -1;
+                    Integer qteKm = -1;
+
+                    if (fraisMois.getLesFraisForfaitModifies().contains("ETP")) {
+                        qteEtape = fraisMois.getEtape();
+                    }
+                    if (fraisMois.getLesFraisForfaitModifies().contains("REP")) {
+                        qteRepas = fraisMois.getRepas();
+                    }
+                    if (fraisMois.getLesFraisForfaitModifies().contains("NUI")) {
+                        qteNuitee = fraisMois.getNuitee();
+                    }
+                    if (fraisMois.getLesFraisForfaitModifies().contains("KM")) {
+                        qteKm = fraisMois.getKm();
+                    }
+
+                    // Envoie des frais forfait à la BD distante
+                    APIOperations api = API.getAPI();
+                    Call<JsonElement> creerFraisForfait = api.creerFraisForfait(this.login, this.mdp
+                            , String.valueOf(leMois), qteEtape, qteRepas, qteNuitee, qteKm);
+
+                    // Réception de la réponse
+                    creerFraisForfait.enqueue(new Callback<JsonElement>() {
+                        @Override
+                        public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                            JsonObject reponse = response.body().getAsJsonObject();
+                            // Affiche les erreurs si il y en a
+                            Boolean erreur = Boolean.valueOf(reponse.get("erreur").toString());
+                            if (erreur) {
+                                String message = String.valueOf(reponse.get("message"));
+                                Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+                                return;
+                            }
+                            Toast.makeText(MainActivity.this, "Les frais ont bien été synchronisés", Toast.LENGTH_LONG).show();
+                            marquerFraisForfaitSync(fraisMois);
+                        }
+                        @Override
+                        public void onFailure(Call<JsonElement> call, Throwable t) {
+                            Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            }
+            // Si aucun frais n'a été synchronisé
+            if (nbFraisSync == 0) {
+                Toast.makeText(MainActivity.this, "Il n'y a pas de frais à synchroniser", Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(MainActivity.this, "Il n'y a pas de frais à synchroniser", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    /**
+     * Marque un frais hors forfait comme ayant été synchronisé
+     * @param mois Le mois / la fiche auquel(le) appartient le frais
+     * @param fraisHf Le frais hors forfait qui a été synchronisé
+     */
+    private void marquerFraisHfSync(FraisMois mois, FraisHf fraisHf) {
+        int indexFrais = mois.getLesFraisHf().indexOf(fraisHf);
+        ArrayList<FraisHf> lesFraisHf = Global.listFraisMois.get(mois.getAnnee()*100 + mois.getMois()).getLesFraisHf();
+        lesFraisHf.get(indexFrais).setEstSync(true);
+        Serializer.serialize(Global.listFraisMois, MainActivity.this, Global.filename);
+    }
+
+    /**
+     * Marque les frais forfait du mois comme ayant été synchronisés
+     * @param mois Le mois / la fiche auquel(le) appartiennent les frais forfait
+     */
+    private void marquerFraisForfaitSync(FraisMois mois) {
+        FraisMois fraisMois = Global.listFraisMois.get(mois.getAnnee()*100 + mois.getMois());
+        fraisMois.getLesFraisForfaitModifies().clear();
+        Serializer.serialize(Global.listFraisMois, MainActivity.this, Global.filename);
     }
 }

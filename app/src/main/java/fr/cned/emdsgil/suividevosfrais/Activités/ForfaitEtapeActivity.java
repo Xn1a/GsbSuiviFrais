@@ -31,8 +31,6 @@ public class ForfaitEtapeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forfait_etape);
         setTitle("GSB : Frais d'étapes");
-        //Toolbar toolbar = findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
 
         // modification de l'affichage du DatePicker
         Global.changeAfficheDate((DatePicker) findViewById(R.id.datEtape), false) ;
@@ -151,6 +149,7 @@ public class ForfaitEtapeActivity extends AppCompatActivity {
             Global.listFraisMois.put(key, new FraisMois(annee, mois)) ;
         }
         Global.listFraisMois.get(key).setEtape(qte) ;
+        Global.listFraisMois.get(key).getLesFraisForfaitModifies().add("ETP");
     }
 
     /**

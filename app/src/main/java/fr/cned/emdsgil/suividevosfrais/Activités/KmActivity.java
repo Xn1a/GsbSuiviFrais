@@ -148,7 +148,8 @@ public class KmActivity extends AppCompatActivity {
 			// creation du mois et de l'annee s'ils n'existent pas déjà
 			Global.listFraisMois.put(key, new FraisMois(annee, mois)) ;
 		}
-		Global.listFraisMois.get(key).setKm(qte) ;		
+		Global.listFraisMois.get(key).setKm(qte) ;
+        Global.listFraisMois.get(key).getLesFraisForfaitModifies().add("KM");
 	}
 
 	/**

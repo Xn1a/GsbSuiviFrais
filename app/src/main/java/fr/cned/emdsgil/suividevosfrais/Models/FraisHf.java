@@ -11,7 +11,8 @@ public class FraisHf  implements Serializable {
 	private final Float montant ;
 	private final String motif ;
 	private final Integer jour ;
-	
+	private boolean estSync = false;
+
 	public FraisHf(Float montant, String motif, Integer jour) {
 		this.montant = montant ;
 		this.motif = motif ;
@@ -30,4 +31,11 @@ public class FraisHf  implements Serializable {
 		return jour;
 	}
 
+    public boolean estSync() {
+        return estSync;
+    }
+
+    public void setEstSync(boolean estSync) {
+        this.estSync = estSync;
+    }
 }

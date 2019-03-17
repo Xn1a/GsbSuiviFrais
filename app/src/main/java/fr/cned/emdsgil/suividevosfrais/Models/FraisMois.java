@@ -14,11 +14,14 @@ public class FraisMois implements Serializable {
     private Integer km; // nombre de km du mois
     private Integer nuitee; // nombre de nuitées du mois
     private Integer repas; // nombre de repas du mois
+    private ArrayList<String> lesFraisForfaitModifies; // Les frais forfait du mois qui ont
+                                                // été modifiés depuis la dernière synchronisation
     private final ArrayList<FraisHf> lesFraisHf; // liste des frais hors forfait du mois
 
     public FraisMois(Integer annee, Integer mois) {
         this.annee = annee;
         this.mois = mois;
+        this.lesFraisForfaitModifies = new ArrayList<>();
         this.etape = 0;
         this.km = 0;
         this.nuitee = 0;
@@ -101,4 +104,7 @@ public class FraisMois implements Serializable {
         return lesFraisHf;
     }
 
+    public ArrayList<String> getLesFraisForfaitModifies() {
+        return lesFraisForfaitModifies;
+    }
 }

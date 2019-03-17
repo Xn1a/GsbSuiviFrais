@@ -149,6 +149,7 @@ public class RepasRestaurantActivity extends AppCompatActivity {
             Global.listFraisMois.put(key, new FraisMois(annee, mois)) ;
         }
         Global.listFraisMois.get(key).setRepas(qte) ;
+        Global.listFraisMois.get(key).getLesFraisForfaitModifies().add("REP");
     }
 
     /**
