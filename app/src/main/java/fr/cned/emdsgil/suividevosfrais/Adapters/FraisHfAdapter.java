@@ -22,14 +22,25 @@ public class FraisHfAdapter extends BaseAdapter {
 
 	private final ArrayList<FraisHf> lesFrais ; // liste des frais du mois
 	private final LayoutInflater inflater ;
+
+    /**
+     * L'objet fraisMois représentant le mois auquels appartiennent les frais
+     */
 	private final FraisMois fraisMois;
+
 	private final Context context;
+
+    /**
+     *  La liste de tous FraisMois enregistrés dans le fichier avec leurs frais
+     */
 	private Hashtable<Integer, FraisMois> listFraisMois;
 
     /**
 	 * Constructeur de l'adapter pour valoriser les propriétés
      * @param context Accès au contexte de l'application
      * @param lesFrais Liste des frais hors forfait
+     * @param fraisMois L'objet fraisMois représentant le mois auquels appartienent les frais
+     * @param listFraisMois La liste des FraisMois enregistrés dans le fichier avec leurs frais
      */
 	public FraisHfAdapter(Context context, ArrayList<FraisHf> lesFrais, FraisMois fraisMois, Hashtable listFraisMois) {
 		this.context = context;
@@ -105,7 +116,7 @@ public class FraisHfAdapter extends BaseAdapter {
     /**
      * Supprime un frais de la ListView et du fichier
      *
-     * @param index L'index du frais à supprimer frais de la liste
+     * @param index L'index du frais à supprimer de la liste
      */
     private void supprimerFrais(int index) {
         // Suppression du frais de la ListView

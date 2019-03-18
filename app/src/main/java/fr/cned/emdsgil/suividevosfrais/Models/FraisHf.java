@@ -11,7 +11,7 @@ public class FraisHf  implements Serializable {
 	private final Float montant ;
 	private final String motif ;
 	private final Integer jour ;
-	private boolean estSync = false;
+	private boolean estSync = false; // Vrai si le frais a déjà été envoyé dans la BD distante, sinon Faux
 
 	public FraisHf(Float montant, String motif, Integer jour) {
 		this.montant = montant ;

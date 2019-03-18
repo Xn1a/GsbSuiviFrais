@@ -1,4 +1,4 @@
-package fr.cned.emdsgil.suividevosfrais.Activités;
+package fr.cned.emdsgil.suividevosfrais.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +10,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.gson.JsonElement;
@@ -26,6 +25,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Activité de connexion à GSB (uniquement pour les visiteurs médicaux)
+ * @author xn1a
+ */
 public class AuthActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,7 +59,7 @@ public class AuthActivity extends AppCompatActivity {
 
     /**
      * Quand on clique sur le bouton de connexion : on tante de connecter le visiteur
-     * à la base de donnée distante de GSB
+     * à la base de données distante de GSB
      */
     private void cmdConnexion_clic() {
         findViewById(R.id.cmdConnexion).setOnClickListener(new Button.OnClickListener() {
@@ -64,7 +67,6 @@ public class AuthActivity extends AppCompatActivity {
                 final String login = ((TextInputEditText)findViewById(R.id.txtLogin)).getText().toString();
                 final String mdp = ((TextInputEditText)findViewById(R.id.txtMdp)).getText().toString();
 
-                // On affiche un message si les champs ne sont pas renseignés
                 if (login.isEmpty() || mdp.isEmpty()) {
                     Toast.makeText(AuthActivity.this, "Merci de renseigner tous les champs", Toast.LENGTH_SHORT).show();
                     return;
@@ -94,14 +96,12 @@ public class AuthActivity extends AppCompatActivity {
                         System.out.println(t.toString());
                     }
                 });
-                //Serializer.serialize(Global.listFraisMois, KmActivity.this, Global.filename) ;
-               // retourActivityPrincipale();
             }
         });
     }
 
     /**
-     * Vérifie si il y a déjà dees identifiants enregistrés
+     * Vérifie si il y a déjà des identifiants enregistrés
      */
     private void recupIdentifiants() {
         Hashtable<?, ?> monHash = (Hashtable<?, ?>) Serializer.deSerialize(AuthActivity.this, Global.idFileName);
@@ -128,7 +128,7 @@ public class AuthActivity extends AppCompatActivity {
 
     /**
      * On affiche le login récupéré (si il y en a) dans le champ login
-     * @param login
+     * @param login Le nom d'utilisateur du visiteur actuellement connecté à GSB
      */
     private void valoriseLogin(String login) {
         ((TextInputEditText) findViewById(R.id.txtLogin)).setText(login);

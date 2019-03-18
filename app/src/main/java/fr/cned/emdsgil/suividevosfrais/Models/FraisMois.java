@@ -14,8 +14,13 @@ public class FraisMois implements Serializable {
     private Integer km; // nombre de km du mois
     private Integer nuitee; // nombre de nuitées du mois
     private Integer repas; // nombre de repas du mois
-    private ArrayList<String> lesFraisForfaitModifies; // Les frais forfait du mois qui ont
-                                                // été modifiés depuis la dernière synchronisation
+
+    /**
+     * Les frais forfait du mois qui ont été modifiés depuis la dernière synchronisation et qui
+     * doivent donc etre re-synchronisés
+     */
+    private ArrayList<String> lesFraisForfaitModifies;
+
     private final ArrayList<FraisHf> lesFraisHf; // liste des frais hors forfait du mois
 
     public FraisMois(Integer annee, Integer mois) {

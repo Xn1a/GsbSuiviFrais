@@ -3,6 +3,10 @@ package fr.cned.emdsgil.suividevosfrais.Utils;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Classe représentant l'API PHP de GSB
+ * @author xn1a
+ */
 public class API {
     public static final String API_URL = "http://192.168.1.23/GSB_API/API.php/";
     public static final String OP_TESTER_CONNEXION = "testerConnexion";
