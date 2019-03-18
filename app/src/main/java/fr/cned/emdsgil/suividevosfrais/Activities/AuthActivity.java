@@ -141,6 +141,7 @@ public class AuthActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<JsonElement>call, Throwable t) {
                 System.out.println(t.toString());
+                Toast.makeText(AuthActivity.this, "Le serveur est actuellement indisponible", Toast.LENGTH_LONG).show();
             }
         });
     }
