@@ -18,6 +18,9 @@ android {
         }
     }
     useLibrary 'org.apache.http.legacy'
+    compileOptions {
+        encoding "UTF-8"
+    }
 }
 
 dependencies {
