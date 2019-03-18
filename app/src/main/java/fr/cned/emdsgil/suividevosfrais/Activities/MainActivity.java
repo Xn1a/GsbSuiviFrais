@@ -1,9 +1,8 @@
-package fr.cned.emdsgil.suividevosfrais.Activités;
+package fr.cned.emdsgil.suividevosfrais.Activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.constraint.solver.Goal;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -18,9 +17,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Map;
 import java.util.Set;
 
 import fr.cned.emdsgil.suividevosfrais.Models.FraisHf;
@@ -36,15 +33,15 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String login;
-    private String mdp;
+    private String login; // Le nom d'utilisateur du visiteur connecté
+    private String mdp; // Le mot de passe du visiteur connecté
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setTitle("GSB : Suivi des frais");
-        // récupération des identifiants du visiteur
+        // récupération des identifiants du visiteur connecté (si il y en a)
         recupIdentifiants();
         // récupération des informations sérialisées
         recupSerialize();
@@ -76,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Récupère la sérialisation  des identifiants du visiteur si elle existe
+     * Récupère la sérialisation des identifiants du visiteur si elle existe
      */
     private void recupIdentifiants() {
         Hashtable<?, ?> monHash = (Hashtable<?, ?>) Serializer.deSerialize(MainActivity.this, Global.idFileName);
@@ -282,22 +279,22 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Marque un frais hors forfait comme ayant été synchronisé
-     * @param mois Le mois / la fiche auquel(le) appartient le frais
+     * @param leMois Le mois / la fiche auquel(le) appartient le frais
      * @param fraisHf Le frais hors forfait qui a été synchronisé
      */
-    private void marquerFraisHfSync(FraisMois mois, FraisHf fraisHf) {
-        int indexFrais = mois.getLesFraisHf().indexOf(fraisHf);
-        ArrayList<FraisHf> lesFraisHf = Global.listFraisMois.get(mois.getAnnee()*100 + mois.getMois()).getLesFraisHf();
+    private void marquerFraisHfSync(FraisMois leMois, FraisHf fraisHf) {
+        int indexFrais = leMois.getLesFraisHf().indexOf(fraisHf);
+        ArrayList<FraisHf> lesFraisHf = Global.listFraisMois.get(leMois.getAnnee()*100 + leMois.getMois()).getLesFraisHf();
         lesFraisHf.get(indexFrais).setEstSync(true);
         Serializer.serialize(Global.listFraisMois, MainActivity.this, Global.filename);
     }
 
     /**
      * Marque les frais forfait du mois comme ayant été synchronisés
-     * @param mois Le mois / la fiche auquel(le) appartiennent les frais forfait
+     * @param leMois Le mois / la fiche auquel(le) appartiennent les frais forfait
      */
-    private void marquerFraisForfaitSync(FraisMois mois) {
-        FraisMois fraisMois = Global.listFraisMois.get(mois.getAnnee()*100 + mois.getMois());
+    private void marquerFraisForfaitSync(FraisMois leMois) {
+        FraisMois fraisMois = Global.listFraisMois.get(leMois.getAnnee()*100 + leMois.getMois());
         fraisMois.getLesFraisForfaitModifies().clear();
         Serializer.serialize(Global.listFraisMois, MainActivity.this, Global.filename);
     }

@@ -1,4 +1,4 @@
-package fr.cned.emdsgil.suividevosfrais.Activités;
+package fr.cned.emdsgil.suividevosfrais.Activities;
 
 import android.icu.util.Calendar;
 import android.os.Bundle;
@@ -30,7 +30,7 @@ public class HfActivity extends AppCompatActivity {
 		DatePicker datePicker = findViewById(R.id.datHf);
 		Global.changeAfficheDate(datePicker, false) ;
 
-		// On ne peut modifier que les frais datant du mois courant et des mois suivant
+		// On ne peut pas modifier les frais des fiches cloturées des mois précédents
 		Calendar cal = Calendar.getInstance();
 		int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
 		cal.add(Calendar.DAY_OF_MONTH, -dayOfMonth+1);

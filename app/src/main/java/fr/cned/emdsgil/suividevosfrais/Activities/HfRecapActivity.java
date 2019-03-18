@@ -1,4 +1,4 @@
-package fr.cned.emdsgil.suividevosfrais.Activités;
+package fr.cned.emdsgil.suividevosfrais.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;

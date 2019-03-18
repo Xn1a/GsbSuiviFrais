@@ -1,4 +1,4 @@
-package fr.cned.emdsgil.suividevosfrais.Activités;
+package fr.cned.emdsgil.suividevosfrais.Activities;
 
 import android.icu.util.Calendar;
 import android.os.Bundle;
@@ -21,7 +21,7 @@ import fr.cned.emdsgil.suividevosfrais.Utils.Global;
 import fr.cned.emdsgil.suividevosfrais.Utils.Serializer;
 import fr.cned.emdsgil.suividevosfrais.R;
 
-public class RepasRestaurantActivity extends AppCompatActivity {
+public class NuiteeHotelActivity extends AppCompatActivity {
 
     // informations affichées dans l'activité
     private Integer annee ;
@@ -31,14 +31,14 @@ public class RepasRestaurantActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_repas_restaurant);
-        setTitle("GSB : Frais de repas");
+        setContentView(R.layout.activity_nuitee_hotel);
+        setTitle("GSB : Frais de nuitées");
 
         // modification de l'affichage du DatePicker
-        DatePicker datePicker = findViewById(R.id.datRepas);
+        DatePicker datePicker = findViewById(R.id.datNuitee);
         Global.changeAfficheDate(datePicker, false) ;
 
-        // On ne peut modifier que les frais datant du mois courant et des mois suivant
+        // On ne peut pas modifier les frais des fiches cloturées des mois passés
         Calendar cal = Calendar.getInstance();
         int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
         cal.add(Calendar.DAY_OF_MONTH, -dayOfMonth+1);
@@ -75,22 +75,22 @@ public class RepasRestaurantActivity extends AppCompatActivity {
      * Valorisation des propriétés avec les informations affichées
      */
     private void valoriseProprietes() {
-        annee = ((DatePicker)findViewById(R.id.datRepas)).getYear() ;
-        mois = ((DatePicker)findViewById(R.id.datRepas)).getMonth() + 1 ;
+        annee = ((DatePicker)findViewById(R.id.datNuitee)).getYear() ;
+        mois = ((DatePicker)findViewById(R.id.datNuitee)).getMonth() + 1 ;
         // récupération de la qte correspondant au mois actuel
         qte = 0 ;
         Integer key = annee*100+mois ;
         if (Global.listFraisMois.containsKey(key)) {
-            qte = Global.listFraisMois.get(key).getRepas() ;
+            qte = Global.listFraisMois.get(key).getNuitee() ;
         }
-        ((EditText)findViewById(R.id.txtRepas)).setText(String.format(Locale.FRANCE, "%d", qte)) ;
+        ((EditText)findViewById(R.id.txtNuitee)).setText(String.format(Locale.FRANCE, "%d", qte)) ;
     }
 
     /**
      * Sur la selection de l'image : retour au menu principal
      */
     private void imgReturn_clic() {
-        findViewById(R.id.imgRepasReturn).setOnClickListener(new ImageView.OnClickListener() {
+        findViewById(R.id.imgNuiteeReturn).setOnClickListener(new ImageView.OnClickListener() {
             public void onClick(View v) {
                 retourActivityPrincipale() ;
             }
@@ -101,9 +101,9 @@ public class RepasRestaurantActivity extends AppCompatActivity {
      * Sur le clic du bouton valider : sérialisation
      */
     private void cmdValider_clic() {
-        findViewById(R.id.cmdRepasValider).setOnClickListener(new Button.OnClickListener() {
+        findViewById(R.id.cmdNuiteeValider).setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                Serializer.serialize(Global.listFraisMois, RepasRestaurantActivity.this, Global.filename) ;
+                Serializer.serialize(Global.listFraisMois, NuiteeHotelActivity.this, Global.filename) ;
                 retourActivityPrincipale() ;
             }
         }) ;
@@ -113,7 +113,7 @@ public class RepasRestaurantActivity extends AppCompatActivity {
      * Sur le clic du bouton plus : ajout de 1 dans la quantité
      */
     private void cmdPlus_clic() {
-        findViewById(R.id.cmdRepasPlus).setOnClickListener(new Button.OnClickListener() {
+        findViewById(R.id.cmdNuiteePlus).setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 qte+=1 ;
                 enregNewQte() ;
@@ -125,7 +125,7 @@ public class RepasRestaurantActivity extends AppCompatActivity {
      * Sur le clic du bouton moins : enlève 1 dans la quantité si c'est possible
      */
     private void cmdMoins_clic() {
-        findViewById(R.id.cmdRepasMoins).setOnClickListener(new Button.OnClickListener() {
+        findViewById(R.id.cmdNuiteeMoins).setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 qte = Math.max(0, qte-1) ; // suppression de 10 si possible
                 enregNewQte() ;
@@ -137,7 +137,7 @@ public class RepasRestaurantActivity extends AppCompatActivity {
      * Sur le changement de date : mise à jour de l'affichage de la qte
      */
     private void dat_clic() {
-        final DatePicker uneDate = (DatePicker) findViewById(R.id.datRepas);
+        final DatePicker uneDate = (DatePicker) findViewById(R.id.datNuitee);
         uneDate.init(uneDate.getYear(), uneDate.getMonth(), uneDate.getDayOfMonth(), new OnDateChangedListener(){
             @Override
             public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -151,22 +151,22 @@ public class RepasRestaurantActivity extends AppCompatActivity {
      */
     private void enregNewQte() {
         // enregistrement dans la zone de texte
-        ((EditText)findViewById(R.id.txtRepas)).setText(String.format(Locale.FRANCE, "%d", qte)) ;
+        ((EditText)findViewById(R.id.txtNuitee)).setText(String.format(Locale.FRANCE, "%d", qte)) ;
         // enregistrement dans la liste
         Integer key = annee*100+mois ;
         if (!Global.listFraisMois.containsKey(key)) {
             // creation du mois et de l'annee s'ils n'existent pas déjà
             Global.listFraisMois.put(key, new FraisMois(annee, mois)) ;
         }
-        Global.listFraisMois.get(key).setRepas(qte) ;
-        Global.listFraisMois.get(key).getLesFraisForfaitModifies().add("REP");
+        Global.listFraisMois.get(key).setNuitee(qte) ;
+        Global.listFraisMois.get(key).getLesFraisForfaitModifies().add("NUI");
     }
 
     /**
      * Retour à l'activité principale (le menu)
      */
     private void retourActivityPrincipale() {
-        Intent intent = new Intent(RepasRestaurantActivity.this, MainActivity.class) ;
+        Intent intent = new Intent(NuiteeHotelActivity.this, MainActivity.class) ;
         startActivity(intent) ;
     }
 }

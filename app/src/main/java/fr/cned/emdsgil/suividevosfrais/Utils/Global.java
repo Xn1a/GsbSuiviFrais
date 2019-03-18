@@ -20,12 +20,17 @@ public abstract class Global {
 	 * public static Hashtable<Integer, FraisMois> listFraisMois = new Hashtable<Integer, FraisMois>();
 	*/
 
-    // tableau d'informations mémorisées
+    /**
+     * Tableau  mémorisédes identifiants du visiteur connecté
+     */
     public static Hashtable<String, String> identifiants = new Hashtable<>();
 
     // fichier contenant les informations sérialisées
     public static final String filename = "save.fic";
-    // Fichier contenant les identifiants sérialisés  du visiteur
+
+    /**
+     * Le fichier de serialisation des identifiants
+     */
     public static final String idFileName = "id.fic";
 
     /**
