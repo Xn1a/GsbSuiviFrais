@@ -71,31 +71,7 @@ public class AuthActivity extends AppCompatActivity {
                     Toast.makeText(AuthActivity.this, "Merci de renseigner tous les champs", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
-                // On teste la connexion
-                APIOperations api = API.getAPI();
-                Call<JsonElement> testerConnexion = api.testerConnexion(login, mdp);
-                testerConnexion.enqueue(new Callback<JsonElement>() {
-                    @Override
-                    public void onResponse(Call<JsonElement>call, Response<JsonElement> response) {
-                        Boolean estConnecte = Boolean.valueOf(response.body().getAsJsonObject().get("estConnecte").toString());
-                        if (estConnecte) {
-                            // Serialization des identifiants
-                            Global.identifiants.put("login", login);
-                            Global.identifiants.put("mdp", mdp);
-                            Serializer.serialize(Global.identifiants, AuthActivity.this, Global.idFileName) ;
-                            retourActivityPrincipale();
-                        }
-                        else {
-                            String message = response.body().getAsJsonObject().get("message").toString();
-                            Toast.makeText(AuthActivity.this, message, Toast.LENGTH_LONG).show();
-                        }
-                    }
-                    @Override
-                    public void onFailure(Call<JsonElement>call, Throwable t) {
-                        System.out.println(t.toString());
-                    }
-                });
+                testerConnexion(login, mdp);
             }
         });
     }
@@ -132,5 +108,40 @@ public class AuthActivity extends AppCompatActivity {
      */
     private void valoriseLogin(String login) {
         ((TextInputEditText) findViewById(R.id.txtLogin)).setText(login);
+    }
+
+    /**
+     * Teste la connexion d'un utilisateur à GSB avec les identifiants renseignés
+     * @param login
+     * @param mdp
+     */
+    private void testerConnexion(final String login, final String mdp) {
+        // Envoie de la requete à l'API GSB
+        APIOperations api = API.getAPI();
+        Call<JsonElement> testerConnexion = api.testerConnexion(login, mdp);
+
+        // Réception de la réponse
+        testerConnexion.enqueue(new Callback<JsonElement>() {
+            @Override
+            public void onResponse(Call<JsonElement>call, Response<JsonElement> response) {
+                Boolean estConnecte = Boolean.valueOf(response.body().getAsJsonObject().get("estConnecte").toString());
+                if (estConnecte) {
+                    // Serialization des identifiants
+                    Global.identifiants.put("login", login);
+                    Global.identifiants.put("mdp", mdp);
+                    Serializer.serialize(Global.identifiants, AuthActivity.this, Global.idFileName) ;
+                    retourActivityPrincipale();
+                }
+                else {
+                    // Affichage du potentiel message d'erreur
+                    String message = String.valueOf(response.body().getAsJsonObject().get("message"));
+                    Toast.makeText(AuthActivity.this, message, Toast.LENGTH_LONG).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<JsonElement>call, Throwable t) {
+                System.out.println(t.toString());
+            }
+        });
     }
 }
